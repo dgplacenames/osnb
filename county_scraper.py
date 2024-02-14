@@ -5,7 +5,7 @@ import requests
 
 #add Name Book county link here
 url = "https://scotlandsplaces.gov.uk/digital-volumes/ordnance-survey-name-books/ayrshire-os-name-books-1855-1857"
-
+end_date = url[-4:]
 soup = BeautifulSoup(requests.get(url).content, 'html.parser')
 urls = []
 
@@ -16,7 +16,8 @@ for h in soup.findAll('td', attrs={'style':'white-space: nowrap'}):
 
 for i in urls:
     url= (f"https://scotlandsplaces.gov.uk{i}")
-    filename = i.split("1857",1)[1]
+    
+    filename = i.split(end_date,1)[1]
     soup = BeautifulSoup(requests.get(url).content, 'html.parser')
     urls = [] 
     for h in soup.findAll('td'):
@@ -60,5 +61,5 @@ for i in urls:
         
         #add your filepath between r'.csv
         pd.concat(res).to_csv(fr'path{filename}.csv')
-        print(page.split("1857",1)[1])
+        print(page.split(end_date,1)[1])
     
