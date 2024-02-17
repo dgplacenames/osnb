@@ -20,8 +20,9 @@ for i in county_soup.findAll('td', attrs={'style':'white-space: nowrap'}):
     volume_link = a_link.get('href') 
     volume_links.append(volume_link)
     
-# Converts volume links to full urls
+
 for i in volume_links:
+    # Converts volume links to full urls
     volume_url= (f"https://scotlandsplaces.gov.uk{i}")
     # Creates filename in format 'county-volume-no'
     filename = i.split(end_date,1)[1]
@@ -35,7 +36,7 @@ for i in volume_links:
     # Finds number of pages in volume
     pages = int(len(page_links)/2)+1
 
-    res =[]
+    res = []
     # Collects data from pages
     for i in range(1,pages):
         page = f"{volume_url}/{i}"
