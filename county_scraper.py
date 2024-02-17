@@ -69,7 +69,7 @@ for i in volume_links:
             df['extras'] = extras
             # Adds linked mapsheet urls to dataframe
             try:
-                for index, item in enumerate(map_links):
+                for index, item in enumerate(map_urls):
                     n = index +1
                     df[f"map_sheet{n}"] = item
             except:
