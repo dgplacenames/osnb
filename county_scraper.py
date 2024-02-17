@@ -72,7 +72,7 @@ for i in volume_links:
             try:
                 for index, item in enumerate(map_urls):
                     n = index +1
-                    df[f"map_sheet{n}"] = item
+                    df[f"mapsheet_{n}"] = item
             except:
                 pass
             res.append(df)
