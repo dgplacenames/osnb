@@ -56,7 +56,7 @@ for i in volume_links:
             try:
                 'href' in a_mapsheet.attrs 
                 map_url = f"https://scotlandsplaces.gov.uk{a_.get('href')}" 
-                map_url.append(map_urls)
+                map_urls.append(map_url)
             except:
                 pass
             
