@@ -5,7 +5,7 @@ import os
 import re
 
 # Replace 'folder_path' with the filepath of the folder you're saving to
-folder_path = r'folder_path'
+folder_path = os.getcwd()
 
 # Add volumes in the brackets, separated by commas
 volumes = [
