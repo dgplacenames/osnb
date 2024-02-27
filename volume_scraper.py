@@ -8,48 +8,48 @@ import re
 folder_path = r'folder_path'
 
 # Add volumes in the brackets, separated by commas
-volumes = ["https://scotlandsplaces.gov.uk/digital-volumes/ordnance-survey-name-books/ayrshire-os-name-books-1855-1857/ayrshire-volume-27",
-           "https://scotlandsplaces.gov.uk/digital-volumes/ordnance-survey-name-books/ayrshire-os-name-books-1855-1857/ayrshire-volume-28"]
-    
+volumes = [
+    "https://scotlandsplaces.gov.uk/digital-volumes/ordnance-survey-name-books/ayrshire-os-name-books-1855-1857/ayrshire-volume-27",
+    "https://scotlandsplaces.gov.uk/digital-volumes/ordnance-survey-name-books/ayrshire-os-name-books-1855-1857/ayrshire-volume-28"
+]
+
 for volume in volumes:
     # Creates filename in format 'county-volume-no'
-    filename = re.search('\d\/(.+)',volume).group(1)
-    # Collects page links 
+    filename = re.search('\d\/(.+)', volume).group(1)
+    # Collects page links
     volume_soup = BeautifulSoup(requests.get(volume).content, 'html.parser')
-    page_links = [] 
+    page_links = []
     for link in volume_soup.findAll('td'):
-        a_page = link.find('a')     
-        page_link = a_page.get('href') 
-        page_links.append(page_link)
+        a_page = link.find('a')
+        if a_page:
+            page_link = a_page.get('href')
+            page_links.append(page_link)
     # Finds number of pages in volume
-    pages = int(len(page_links)/2)+1
+    pages = int(len(page_links) / 2) + 1
 
-    res =[]
+    res = []
     # Collects data from pages
-    for page_no in range(1,pages):
+    for page_no in range(1, pages):
         page = f"{volume}/{page_no}"
         page_soup = BeautifulSoup(requests.get(page).content, 'html.parser')
         map_urls = []
         # Collects page id
         title = page_soup.find('title').text
-        os_id = re.search('(.+) \|',title).group(1)
+        os_id = re.search('(.+) \|', title).group(1)
         # Collects text from 'Continued entries/extra info'
-        panel_body = page_soup.find('div',{'class':'panel-body'}).get_text(' ', strip = True)
+        panel_body = page_soup.find('div', {'class': 'panel-body'}).get_text(' ', strip=True)
         try:
-            extras = re.search('extra info((.|\n)*)',panel_body).group(1)
+            extras = re.search('extra info((.|\n)*)', panel_body).group(1)
         except:
-            pass
+            extras = None
         # Collects linked mapsheet urls
         for link in page_soup.findAll('td'):
             a_mapsheet = link.find('a')
-            try:
-                'href' in a_mapsheet.attrs 
-                map_url = f"https://scotlandsplaces.gov.uk{a_mapsheet.get('href')}" 
-                map_url.append(map_urls)
-            except:
-                pass
-            
-        # Collects data from table of entries and adds additional colums to dataframe 
+            if a_mapsheet and 'href' in a_mapsheet.attrs:
+                map_url = f"https://scotlandsplaces.gov.uk{a_mapsheet.get('href')}"
+                map_urls.append(map_url)
+
+        # Collects data from table of entries and adds additional columns to dataframe
         try:
             dfs = pd.read_html(page)
             df = dfs[0]
@@ -57,34 +57,30 @@ for volume in volumes:
             df['id'] = os_id
             df['extras'] = extras
             # Adds linked mapsheet urls to dataframe
-            try:
-                for index, item in enumerate(map_links):
-                    n = index +1
-                    df[f"map_sheet{n}"] = item
-            except:
-                pass
+            for index, item in enumerate(map_urls):
+                n = index + 1
+                df[f"map_sheet{n}"] = item
             res.append(df)
-            
         # Collects data from pages without table of entries
         except:
             data = {
-                    "List of names as written": [""],
-                    "Various modes of spelling": [""],
-                    "Authorities for spelling": [""],
-                    "Situation": [""],
-                    "Description remarks": [""],
-                    "url": [page],
-                    "id": [os_id],
-                    "extras": [extras],
-                    }
+                "List of names as written": [""],
+                "Various modes of spelling": [""],
+                "Authorities for spelling": [""],
+                "Situation": [""],
+                "Description remarks": [""],
+                "url": [page],
+                "id": [os_id],
+                "extras": [extras],
+            }
             df = pd.DataFrame(data)
             res.append(df)
-        
-        # Addds pages to file
-        pd.concat(res).to_csv(fr'{folder_path}{filename}.csv')
-        
-        # Prints pages added to volumes
-        print(f'{filename}/{page_no}')
+
+    # Adds pages to file
+    pd.concat(res).to_csv(fr'{folder_path}/{filename}.csv', index=False)
+
+    # Prints pages added to volumes
+    print(f'{filename}/{page_no}')
 
 # Combines all volumes into additional file
 all_files = os.listdir(folder_path)
