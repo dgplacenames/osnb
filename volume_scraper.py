@@ -40,7 +40,7 @@ for volume in volumes:
         panel_body = page_soup.find('div', {'class': 'panel-body'}).get_text(' ', strip=True)
         try:
             extras = re.search('extra info((.|\n)*)', panel_body).group(1)
-        except:
+        except AttributeError:
             extras = None
         # Collects linked mapsheet urls
         for link in page_soup.findAll('td'):
@@ -62,7 +62,7 @@ for volume in volumes:
                 df[f"map_sheet{n}"] = item
             res.append(df)
         # Collects data from pages without table of entries
-        except:
+        except ValueError:
             data = {
                 "List of names as written": [""],
                 "Various modes of spelling": [""],
