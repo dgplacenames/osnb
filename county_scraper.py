@@ -4,7 +4,7 @@ import requests
 import re
 import os
 
-# Replace 'folder_path' with the filepath of the folder you're saving to
+# Sets folder path to where the script is saved
 folder_path = os.getcwd()
 
 # Add Name Book county link here
