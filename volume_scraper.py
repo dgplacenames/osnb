@@ -4,7 +4,7 @@ import requests
 import os
 import re
 
-# Replace 'folder_path' with the filepath of the folder you're saving to
+# Sets folder path to where the script is saved
 folder_path = os.getcwd()
 
 # Add volumes in the brackets, separated by commas
@@ -76,11 +76,11 @@ for volume in volumes:
             df = pd.DataFrame(data)
             res.append(df)
 
-    # Adds pages to file
-    pd.concat(res).to_csv(fr'{folder_path}/{filename}.csv', index=False)
+        # Prints pages added to volume(s)
+        print(f'{filename}/{page_no}')
 
-    # Prints pages added to volumes
-    print(f'{filename}/{page_no}')
+        # Saves volume(s) to file
+        pd.concat(res).to_csv(fr'{folder_path}/{filename}.csv', index=False)
 
 # Combines all volumes into additional file
 all_files = os.listdir(folder_path)
