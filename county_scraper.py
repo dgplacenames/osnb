@@ -93,7 +93,6 @@ for i in volume_links:
             res.append(df)
         
         # Saves volume
-        # pd.concat(res).to_csv(os.path.join(folder_path, f'{filename}.csv'))
         pd.concat(res).to_csv(fr'{folder_path}{filename}.csv')
 
         
