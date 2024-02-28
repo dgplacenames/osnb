@@ -5,8 +5,7 @@ import re
 import os
 
 # Replace 'folder_path' with the filepath of the folder you're saving to
-# folder_path = os.getcwd()
-folder_path = 'C:/Users/david/osnb/osnb-1/'
+folder_path = os.getcwd()
 
 # Add Name Book county link here
 county_url = "https://scotlandsplaces.gov.uk/digital-volumes/ordnance-survey-name-books/ayrshire-os-name-books-1855-1857"
