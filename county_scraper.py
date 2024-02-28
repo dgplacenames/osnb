@@ -5,7 +5,7 @@ import re
 import os
 
 # Replace 'folder_path' with the filepath of the folder you're saving to
-folder_path = r'folder_path'
+folder_path = os.getcwd()
 
 # Add Name Book county link here
 county_url = "https://scotlandsplaces.gov.uk/digital-volumes/ordnance-survey-name-books/ayrshire-os-name-books-1855-1857"
@@ -49,7 +49,7 @@ for i in volume_links:
         panel_body = page_soup.find('div',{'class':'panel-body'}).get_text(' ', strip = True)
         try:
             extras = re.search('extra info((.|\n)*)',panel_body).group(1)
-        except:
+        except AttributeError:
             pass
         # Collects linked mapsheet urls
         for i in page_soup.findAll('td'):
@@ -58,10 +58,10 @@ for i in volume_links:
                 'href' in a_mapsheet.attrs 
                 map_url = f"https://scotlandsplaces.gov.uk{a_mapsheet.get('href')}" 
                 map_urls.append(map_url)
-            except:
+            except AttributeError:
                 pass
             
-        # Collects data from table of entries and adds additional colums to dataframe 
+        # Collects data from table of entries and adds additional columns to dataframe 
         try:
             dfs = pd.read_html(page)
             df = dfs[0]
@@ -73,12 +73,12 @@ for i in volume_links:
                 for index, item in enumerate(map_urls):
                     n = index +1
                     df[f"mapsheet_{n}"] = item
-            except:
+            except IndexError:
                 pass
             res.append(df)
             
         # Collects data from pages without table of entries
-        except:
+        except ValueError:
             data = {
                     "List of names as written": [""],
                     "Various modes of spelling": [""],
@@ -93,7 +93,7 @@ for i in volume_links:
             res.append(df)
         
         # Saves volume
-        pd.concat(res).to_csv(fr'{folder_path}{filename}.csv')
+        pd.concat(res).to_csv(os.path.join(folder_path, f'{filename}.csv'), index=False)
         
         # Prints pages added to volumes
         print(page.split(end_date,1)[1])
