@@ -5,7 +5,8 @@ import re
 import os
 
 # Replace 'folder_path' with the filepath of the folder you're saving to
-folder_path = os.getcwd()
+# folder_path = os.getcwd()
+folder_path = 'C:/Users/david/osnb/osnb-1/'
 
 # Add Name Book county link here
 county_url = "https://scotlandsplaces.gov.uk/digital-volumes/ordnance-survey-name-books/ayrshire-os-name-books-1855-1857"
@@ -93,7 +94,9 @@ for i in volume_links:
             res.append(df)
         
         # Saves volume
-        pd.concat(res).to_csv(os.path.join(folder_path, f'{filename}.csv'), index=False)
+        # pd.concat(res).to_csv(os.path.join(folder_path, f'{filename}.csv'))
+        pd.concat(res).to_csv(fr'{folder_path}{filename}.csv')
+
         
         # Prints pages added to volumes
         print(page.split(end_date,1)[1])
