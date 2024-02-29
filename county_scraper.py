@@ -46,8 +46,8 @@ for i in volume_links:
         title = page_soup.find('title').text
         os_id = re.search('(.+) \|',title).group(1)
         # Collects text from 'Continued entries/extra info'
-        panel_body = page_soup.find('div',{'class':'panel-body'}).get_text(' ', strip = True)
         try:
+            panel_body = page_soup.find('div',{'class':'panel-body'}).get_text(' ', strip = True)
             extras = re.search('extra info((.|\n)*)',panel_body).group(1)
         except AttributeError:
             pass
