@@ -93,7 +93,7 @@ df_list = []
 
 for csv in csv_files:
     file_path = os.path.join(folder_path, csv)
-    df = pd.read_csv(file_path)
+    df = pd.read_csv(file_path, low_memory=False)
     df_list.append(df)
 
 # Concatenates all data into one dataframe
