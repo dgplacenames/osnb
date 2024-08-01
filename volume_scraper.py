@@ -32,6 +32,9 @@ for volume in volumes:
     for page_no in range(1, pages):
         page = f"{volume}/{page_no}"
         page_soup = BeautifulSoup(requests.get(page).content, 'html.parser')
+        # Replace breaks with delimiter, in this case <br />
+        for br in page_soup('br'):
+                br.replace_with('<br />')
         map_urls = []
         # Collects page id
         title = page_soup.find('title').text
@@ -51,8 +54,7 @@ for volume in volumes:
 
         # Collects data from table of entries and adds additional columns to dataframe
         try:
-            dfs = pd.read_html(page)
-            df = dfs[0]
+            df = pd.read_html(str(page_soup))[0]
             df['url'] = page
             df['id'] = os_id
             df['extras'] = extras
