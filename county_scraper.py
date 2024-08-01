@@ -41,6 +41,9 @@ for i in volume_links:
     for i in range(1,pages):
         page = f"{volume_url}/{i}"
         page_soup = BeautifulSoup(requests.get(page).content, 'html.parser')
+        # Replace breaks with delimiter, in this case <br />
+        for br in page_soup('br'):
+                br.replace_with('<br />')
         map_urls = []
         # Collects page id
         title = page_soup.find('title').text
